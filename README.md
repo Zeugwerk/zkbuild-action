@@ -20,8 +20,6 @@ Use with an action such as [publish-unit-test-result-action](https://github.com/
 
 **Optional** TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, the latest available version of TwinCAT is used.
 
-**Optional** Path of the working directory, which should contain a Visual Studio solution and the configuration file `.Zeugwerk/config.json` (see Config section).
-
 ### 'working-directory'
 
 **Optional** Path of the working directory, which should contain a Visual Studio solution and the configuration file `.Zeugwerk/config.json` (see Config section).
