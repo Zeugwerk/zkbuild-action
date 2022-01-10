@@ -1,6 +1,6 @@
 # zkbuild-action
 
-This [GitHub Action](https://github.com/features/actions) can be used to build and unittest PLCs that are contained in a Visual Studio Solution file (.sln) on a Zeugwerk CI/CD server.
+This [GitHub Action](https://github.com/features/actions) can be used to build and unittest PLCs that are contained in a Visual Studio Solution file (.sln) of your repository with a Zeugwerk CI/CD server.
 
 For public repositories 30 doc builds per month are allowed. [Contact us](mailto:info@zeugwerk.at) to retrieve a subscription if you need more builds per month or use Zeugwerk CI/CD for private repositories.
 
