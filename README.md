@@ -4,7 +4,7 @@ This [GitHub Action](https://github.com/features/actions) can be used to build a
 
 For public repositories 30 doc builds per month are allowed. [Contact us](mailto:info@zeugwerk.at) to retrieve a subscription if you need more builds per month or use Zeugwerk CI/CD for private repositories.
 
-Use with an action such as [publish-unit-test-result-actio](https://github.com/EnricoMi/publish-unit-test-result-action) to publish the results of the unittests to GitHub.
+Use with an action such as [publish-unit-test-result-action](https://github.com/EnricoMi/publish-unit-test-result-action) to publish the results of the unittests to GitHub.
 
 ## Inputs
 
@@ -58,7 +58,7 @@ that is taken from `config.json`. So when changing PLC properties, keep in mind 
 
 * The initial parameter `name` sets the name of the (Visual Studio) solution that should be considered when building.
 * `repositories` is a list of URLs where missing references (i.e. `system_references`) should be downloaded from. The CI/CD server doesn't necessarily have all PLC dependencies available and may need to download and install them first. As a fallback the CI/CD server tries to use the library that are already installed on the server.
-  A repository is a URL that is publically available and should have one of the following layouts
+  A repository is a URL that is publicly available and should have one of the following layouts
   1. Simple layout where all branches and Twincat versions use the same libraries
       ``` 
       root
