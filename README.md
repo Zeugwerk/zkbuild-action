@@ -57,7 +57,34 @@ that is taken from `config.json`. So when changing PLC properties, keep in mind 
 ```
 
 * The initial parameter `name` sets the name of the (Visual Studio) solution that should be considered when building.
-* **(tba)** `repositories` is a list of URLs where missing references (i.e. `system_references`) should be downloaded from. The CI/CD server doesn't necessarily have all PLC dependencies available and may need to download and install them first.
+* `repositories` is a list of URLs where missing references (i.e. `system_references`) should be downloaded from. The CI/CD server doesn't necessarily have all PLC dependencies available and may need to download and install them first. As a fallback the CI/CD server tries to use the library that are already installed on the server.
+  A repository is a URL that is publically available and should have one of the following layouts
+  1. Simple layout where all branches and Twincat versions use the same libraries
+      ``` 
+      root
+      └── reference1_0.0.0.0.library
+      └── reference2_0.0.0.0.library
+      .
+      .
+      .
+      ```  
+  2. Advanced layout where branches and distinct twincat version may use a different set of libraries
+     ```
+      root
+      ├── main                                  branch name
+      │   └── TC3.1.4024.22                     used twincat version, see system_references
+      |   │   └── reference1_0.0.0.0.library
+      |   │   └── reference2_0.0.0.0.library
+      ├── branch1                               branch name
+      │   └── TC3.1.4024.20                     used twincat version, see system_references
+      |   │   └── reference1_0.0.0.0.library
+      |   │   └── reference2_0.0.0.0.library
+      .
+      .
+      .
+      ```
+
+
 * What follows is the JSON dictionary `plcprojects` that describes how individual PLCs that are contained in the solution file should be handled
   * `name` has to match the PLC title as it is set in Visual Studio and TwinCAT XAE, respectively
   * `version` is the default version that is written to the PLC properties if no tags are available in the repository. If tags in the form x.y.z.w are available,
