@@ -8,19 +8,19 @@ Use with an action such as [publish-unit-test-result-action](https://github.com/
 
 ## Inputs
 
-### 'username'
+#### 'username'
 
 **Required** [Register](https://zeugwerk.at/) to create a user account to use Zeugwerk Doc. Fill-in the username you have chosen here. 
 
-### 'password'
+#### 'password'
 
 **Required** [Register](https://zeugwerk.at/) to create a user account to use Zeugwerk Doc. Fill-in the password you have chosen here. 
 
-### 'tcversion'
+#### 'tcversion'
 
 **Optional** TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, the latest available version of TwinCAT is used.
 
-### 'working-directory'
+#### 'working-directory'
 
 **Optional** Path of the working directory, which should contain a Visual Studio solution and the configuration file `.Zeugwerk/config.json` (see Config section).
 
