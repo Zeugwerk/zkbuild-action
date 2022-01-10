@@ -12,10 +12,6 @@ inputs:
     description: 'Password for the Zeugwerk CI/CD Service'
     required: true
     default: ''
-  filepath:
-    description: 'Path to a Zeugwerk config.json file'
-    required: true
-    default: ''
   working-directory:
     description: 'Working directory'
     required: true
@@ -26,5 +22,4 @@ runs:
   args:
     - ${{ inputs.username }}
     - ${{ inputs.password }}
-    - ${{ inputs.filepath }}
     - ${{ inputs.working-directory }}
