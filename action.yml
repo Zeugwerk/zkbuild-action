@@ -12,6 +12,10 @@ inputs:
     description: 'Password for the Zeugwerk CI/CD Service'
     required: true
     default: ''
+  tcversion:
+    description: 'TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, the latest version of TwinCAT is used.'
+    required: false
+    default: ''    
   working-directory:
     description: 'Working directory'
     required: true
@@ -22,4 +26,5 @@ runs:
   args:
     - ${{ inputs.username }}
     - ${{ inputs.password }}
+    - ${{ inputs.tcversion }}    
     - ${{ inputs.working-directory }}
