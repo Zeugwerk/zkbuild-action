@@ -36,7 +36,7 @@ that is taken from `config.json`. So when changing PLC properties, keep in mind 
 ```json
 {
   "name": "Twincat Project 1.sln",
-  "repository": "",
+  "repositories": [],
   "plcprojects": [
     {
       "name": "Untitled1",
@@ -57,8 +57,7 @@ that is taken from `config.json`. So when changing PLC properties, keep in mind 
 ```
 
 * The initial parameter `name` sets the name of the (Visual Studio) solution that should be considered when building.
-* **(tba)** `repository` is an URL where missing references (i.e. `system_references`) should be downloaded from. The CI/CD server doesn't necessarily have all PLC dependencies 
-  available and may need to download and install them first.
+* **(tba)** `repositories` is a list of URLs where missing references (i.e. `system_references`) should be downloaded from. The CI/CD server doesn't necessarily have all PLC dependencies available and may need to download and install them first.
 * What follows is the JSON dictionary `plcprojects` that describes how individual PLCs that are contained in the solution file should be handled
   * `name` has to match the PLC title as it is set in Visual Studio and TwinCAT XAE, respectively
   * `version` is the default version that is written to the PLC properties if no tags are available in the repository. If tags in the form x.y.z.w are available,
