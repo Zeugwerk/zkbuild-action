@@ -16,6 +16,20 @@ This [GitHub Action](https://github.com/features/actions) can be used to build a
 
 * `working-directory`: Path of the working directory, which should contain a Visual Studio solution and the configuration file `.Zeugwerk/config.json` (see Config section). (Optional)
 
+
+
+### Creating secrets
+
+We highly recommend to store the value for `username` and `password` in GitHub as secrets. GitHub Secrets are encrypted and allow you to store sensitive information, such as access tokens, in your repository. Do these steps for `username` and `password`
+
+1. On GitHub, navigate to the main page of the repository.
+2. Under your repository name, click on the "Settings" tab.
+3. In the left sidebar, click Secrets.
+4. On the right bar, click on "Add a new secret" 
+5. Type a name for your secret in the "Name" input box. (i.e. `ACTIONS_ZGWK_USERNAME`, `ACTIONS_ZGWK_PASSWORD`)
+6. Type the value for your secret.
+7. Click Add secret. 
+
 ## Build process
 
 todo
@@ -80,7 +94,6 @@ that is taken from `config.json`. So when changing PLC properties, keep in mind 
       .
       ```
 
-
 * What follows is the JSON dictionary `plcprojects` that describes how individual PLCs that are contained in the solution file should be handled
   * `name` has to match the PLC title as it is set in Visual Studio and TwinCAT XAE, respectively
   * `version` is the default version that is written to the PLC properties if no tags are available in the repository. If tags in the form x.y.z.w are available,
@@ -113,8 +126,8 @@ jobs:
       - name: Build
         uses: Zeugwerk/zkbuild-action@1.0.0
         with:
-          username: ${{ secrets.API_USERNAME }}
-          password: ${{ secrets.API_PASSWORD }}
+          username: ${{ secrets.ACTIONS_ZGWK_USERNAME }}
+          password: ${{ secrets.ACTIONS_ZGWK_PASSWORD }}
       - name: Publish Unittest
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
