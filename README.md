@@ -1,16 +1,16 @@
 # zkbuild-action
 
-This [GitHub Action](https://github.com/features/actions) can be used to build and unittest PLCs that are contained in a Visual Studio Solution file (.sln) of your repository with a Zeugwerk CI/CD server.
+This [GitHub Action](https://github.com/features/actions) can be used to build and unittest PLCs that are contained in a Visual Studio Solution file (.sln) of your repository with a Zeugwerk CI/CD server. Use with an action such as [publish-unit-test-result-action](https://github.com/EnricoMi/publish-unit-test-result-action) to publish the results of the unittests to GitHub.
 
-For public repositories 30 doc builds per month are allowed. [Contact us](mailto:info@zeugwerk.at) to retrieve a subscription if you need more builds per month or use Zeugwerk CI/CD for private repositories.
+[Register](mailto:info@zeugwerk.at) to use this action for public repositories, this will allow you to run this action 30 times per month. [Contact us](mailto:info@zeugwerk.at) to retrieve a subscription if you need more builds per month or use Zeugwerk Doc for private repositories either on GitHub or any CI/CD server hosted in the cloud or on-premise or need support.
 
-Use with an action such as [publish-unit-test-result-action](https://github.com/EnricoMi/publish-unit-test-result-action) to publish the results of the unittests to GitHub.
+
 
 ## Inputs
 
-* `username`: Username of a Zeugwerk Useraccount, [register here](https://zeugwerk.at/) (Required)
+* `username`: Username of a Zeugwerk Useraccount (Required)
 
-* `password`: Password of a Zeugwerk Useraccount, [register here](https://zeugwerk.at/) (Required)
+* `password`: Password of a Zeugwerk Useraccount (Required)
 
 * `tcversion`: TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, the latest available version of TwinCAT is used. (Optional)
 
