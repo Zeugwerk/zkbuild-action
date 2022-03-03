@@ -14,7 +14,7 @@ fi
 
 ARTIFACT_MD5=`printf '%s' "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" | md5sum | awk '{print $1}'`
 ARTIFACT="$1_zkbuild_$ARTIFACT_MD5.zip"
-wget https://zeugwerk.at/public/$ARTIFACT
+wget https://wp13699039.server-he.de/public/$ARTIFACT
 if [[ $? -ne 0 ]]; then
     exit 1
 fi
