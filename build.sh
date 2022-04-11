@@ -19,7 +19,9 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 
+# return code 0 means no errors
+# return code 1 means there was an error or warning, but processing was successful anyway
 unzip -o $ARTIFACT
-if [[ $? -ne 0 ]]; then
+if [[ $? -gt 1 ]]; then
     exit 1
 fi
