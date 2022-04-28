@@ -5,7 +5,7 @@ BRANCH=$GITHUB_HEAD_REF
 if [ "$BRANCH" == "" ]; then
     BRANCH=$(echo $GITHUB_REF | sed 's/refs\/heads\///');
 fi;
-BRANCH=$(echo -n $BRANCH | tr "/" "-")
+#BRANCH=$(echo -n $BRANCH | tr "/" "-")
 
 # Run a build
 curl -s --show-error -N -G --data-urlencode "scm=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" --data-urlencode "sha=$GITHUB_SHA" --data-urlencode "branch=$BRANCH" --data-urlencode "username=$1" --data-urlencode "password=$2" --data-urlencode "tcversion=$3" --data-urlencode "working-directory=$4" --data-urlencode "method=zkbuild" https://operations.zeugwerk.dev/api.php | tee response
