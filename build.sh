@@ -20,14 +20,14 @@ fi
 if [[ "$status" = *"HTTP/1.1 202"* ]]; then
     ARTIFACT_MD5=`printf '%s' "ZKBUILD_$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/$GITHUB_SHA" | md5sum | awk '{print $1}'`
     ARTIFACT="$ARTIFACT_MD5.zip"
-    wget https://operations.zeugwerk.dev/public/$ARTIFACT
+    wget -q https://operations.zeugwerk.dev/public/$ARTIFACT
     if [[ $? -ne 0 ]]; then
         exit 202
     fi
     
     # return code 0 means no errors
     # return code 1 means there was an error or warning, but processing was successful anyway
-    unzip -o $ARTIFACT
+    unzip -q -o $ARTIFACT
     if [[ $? -gt 1 ]]; then
         exit 202
     fi
