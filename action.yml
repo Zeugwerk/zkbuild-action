@@ -13,13 +13,9 @@ inputs:
     required: true
     default: ''
   tcversion:
-    description: 'TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, the latest version of TwinCAT is used.'
+    description: 'TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, a arbitrary TwinCAT version, which is available on the Zeugwerk CI environment, is used.'
     required: false
     default: ''    
-  working-directory:
-    description: 'Working directory'
-    required: true
-    default: '.'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -27,4 +23,3 @@ runs:
     - ${{ inputs.username }}
     - ${{ inputs.password }}
     - ${{ inputs.tcversion }}    
-    - ${{ inputs.working-directory }}
