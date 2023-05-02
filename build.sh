@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 
-# Get the current branch name
-BRANCH=$GITHUB_HEAD_REF
-if [ "$BRANCH" == "" ]; then
-    BRANCH=$(echo $GITHUB_REF | sed 's/refs\/heads\///');
-fi;
-#BRANCH=$(echo -n $BRANCH | tr "/" "-")
+BITBUCKET_SERVER_URL=$BITBUCKET_GIT_HTTP_ORIGIN
+BRANCH=$BITBUCKET_BRANCH
 
 # Run a build
-curl -s --show-error -N -G --data-urlencode "scm=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" --data-urlencode "sha=$GITHUB_SHA" --data-urlencode "branch=$BRANCH" --data-urlencode "username=$1" --data-urlencode "password=$2" --data-urlencode "tcversion=$3" --data-urlencode "method=zkbuild" https://operations.zeugwerk.dev/api.php | tee response
+curl -s --show-error -N -G --data-urlencode "scm=$BITBUCKET_SERVER_URL" --data-urlencode "sha=$BITBUCKET_COMMIT" --data-urlencode "branch=$BRANCH" --data-urlencode "username=$1" --data-urlencode "password=$2" --data-urlencode "tcversion=$3" --data-urlencode "method=zkbuild" https://operations.zeugwerk.dev/api.php | tee response
 status="$(tail -n1 response)"
 
 # Status is not SUCCESS and not UNSTABLE
@@ -18,7 +14,7 @@ fi
 
 # We got and artifact that we can extract
 if [[ "$status" = *"HTTP/1.1 202"* ]]; then
-    ARTIFACT_MD5=`printf '%s' "ZKBUILD_$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/$GITHUB_SHA" | md5sum | awk '{print $1}'`
+    ARTIFACT_MD5=`printf '%s' "ZKBUILD_$BITBUCKET_SERVER_URL/$BITBUCKET_COMMIT" | md5sum | awk '{print $1}'`
     ARTIFACT="$ARTIFACT_MD5.zip"
     wget -q https://operations.zeugwerk.dev/public/$ARTIFACT
     if [[ $? -ne 0 ]]; then
