@@ -1,7 +1,3 @@
-> This service is not officially launched yet!
-> If you want to take part in the beta test, please [contact us](mailto:info@zeugwerk.at)
-
-# DRAFT
 # zkbuild-action
 
 This [GitHub Action](https://github.com/features/actions) can be used to build and unittest PLCs that are contained in a Visual Studio Solution file (.sln) of your repository with a Zeugwerk CI/CD server. Use with an action such as [publish-unit-test-result-action](https://github.com/EnricoMi/publish-unit-test-result-action) to publish the results of the unittests to GitHub.
@@ -32,80 +28,86 @@ We highly recommend to store the value for `username` and `password` in GitHub a
 6. Type the value for your secret.
 7. Click Add secret. 
 
-## Build process
-
-todo
-
-## Unittests
-
-todo
-
 ## Config
 
-This action utilizes a config file, which should look like the example below, but has to be adapted for individual PLCs. *zkbuild* overwrites PLC settings with the information
-that is taken from `config.json`. So when changing PLC properties, keep in mind to also adapt the configuration file. For instance, if new references are added to the PLC, also specify them in the configuration file, in the `system_references` section.
+This action requires a configuration file that is places in the folder `.Zeugwerk/config.json`. The simplest way to generate a configuration file is by using the [Twinpack Package Manager](https://github.com/Zeugwerk/Twinpack/blob/main/README.md#configuration-file-zeugwerkconfigjson).
+
+A typcial configuration file for a solution with 1 PLC looks like this (Twinpack generates this for you automatically)
 
 ```json
 {
-  "name": "Twincat Project 1.sln",
-  "repositories": [],
-  "plcprojects": [
+  "fileversion": 1,
+  "solution": "TwinCAT Project1.sln",
+  "projects": [
     {
-      "name": "Untitled1",
-      "version": "0.0.0.0",
-      "type": "Application",
-      "system_references": {
-        "TC3.1.4024.22": [
-          "Tc2_Standard=3.3.3.0",
-          "Tc2_Utilities=3.3.47.0",
-          "Tc2_EtherCAT=3.3.16.0"
-        ]
-      },
-      "zframework": {},
-      "bindings": {}
+      "name": "TwinCAT Project1",
+      "plcs": [
+        {
+          "version": "1.0.0.0",
+          "name": "Untitled1",
+          "type": "Application",
+          "packages": [
+            {
+              "version": "1.2.19.0",
+              "repository": "bot",
+              "name": "ZCore",
+              "branch": "release/1.2",
+              "target": "TC3.1",
+              "configuration": "Distribution",
+              "distributor-name": "Zeugwerk GmbH"
+            }
+          ],
+          "references": {
+            "*": [
+              "Tc2_Standard=*",
+              "Tc2_System=*",
+              "Tc3_Module=*"
+            ]
+          }
+        }
+      ]
     }
   ]
 }
 ```
 
-* The initial parameter `name` sets the name of the (Visual Studio) solution that should be considered when building.
-* `repositories` is a list of URLs where missing references (i.e. `system_references`) should be downloaded from. The CI/CD server doesn't necessarily have all PLC dependencies available and may need to download and install them first. As a fallback the CI/CD server tries to use the library that are already installed on the server.
-  A repository is a URL that is publicly available and should have one of the following layouts
-  1. Simple layout where all branches and Twincat versions use the same libraries
-      ``` 
-      root
-      └── reference1_0.0.0.0.library
-      └── reference2_0.0.0.0.library
-      .
-      .
-      .
-      ```  
-  2. Advanced layout where branches and distinct twincat version may use a different set of libraries
-     ```
-      root
-      ├── main                                  branch name
-      │   └── TC3.1.4024.22                     used twincat version, see system_references
-      |   │   └── reference1_0.0.0.0.library
-      |   │   └── reference2_0.0.0.0.library
-      ├── branch1                               branch name
-      │   └── TC3.1.4024.20                     used twincat version, see system_references
-      |   │   └── reference1_0.0.0.0.library
-      |   │   └── reference2_0.0.0.0.library
-      .
-      .
-      .
-      ```
+## Unittests
 
-* What follows is the JSON dictionary `plcprojects` that describes how individual PLCs that are contained in the solution file should be handled
-  * `name` has to match the PLC title as it is set in Visual Studio and TwinCAT XAE, respectively
-  * `version` is the default version that is written to the PLC properties if no tags are available in the repository. If tags in the form x.y.z.w are available,
-    the last tag is incremented and used instead (x.y.z.w+1)
-  * `type` tells zkdoc if it should build the project as a "Library" or an "Application".
-  * `system_references` is a JSON dictionary containing all the TwinCAT versions that are supported by the PLC and distinct library versions that are used for each distinct.
-     This dictionary has the format `"<Twincat_Version>": ["Library1=<Library1_Versionnumber_or_*>", "Library2=<Library2_Versionnumber_or_*>"]`
-  * **(tba)** `zframework`
-  * **(tba)** `bindings`
-TwinCAT version, using a wildcard for the latest available library on the target may be used instead of setting a version explicitly.
+zkbuild can also execute unittests. We support two variants how this can be achieved
+
+### Unittests defined in own PLC
+
+- For this, it is mandatory to place your unittests in a subfolder called `tests`
+- It **requires the usage** of the latest release of [TcUnit](https://github.com/tcunit/TcUnit).
+- Tests can be implemented as documented in TcUnit.
+- A seperate configuration file is needed in `tests\.Zeugwerk\config.json`, which describes how to build the unittest PLC
+
+### Unittests defined directly in the PLC
+
+- This is the perferred way for us to implement tests, because it puts the tests right next to the actual code.
+- It **requires the usage** of the package `Zeugwerk.Core` (`ZCore`), because zkbuild relies on an [assertions interface](https://doc.zeugwerk.dev/reference/ZCore/UnitTest/IAssertions.html) that is defined in this library.
+- Creating tests is pretty straight forward: If you want to write testsuite for the function block `Valve`, implement the following function block
+
+```
+FUNCTION_BLOCK ValveTest EXTENDS Valve IMPLEMENTS ZCore.IUnittest
+
+METHOD Test_NameOfTest1
+VAR_INPUT
+  assertions : ZCore.IAssertions;
+END_VAR
+
+assertions.IsTrue(TRUE, 'This test passes');
+
+METHOD Test_NameOfTest2
+VAR_INPUT
+  assertions : ZCore.IAssertions;
+END_VAR
+
+assertions.EqualsDint(5, 4, 'This test failes');
+```
+
+It is important that the function block implements the interface `ZCore.IUnittest`, then every method with the signature above is regarded as a test.
+You can implement as many testsuites and tests as you want. The [assertions interface](https://doc.zeugwerk.dev/reference/ZCore/UnitTest/IAssertions.html) offers a lot of methods to write tests. Extending from the function block that is tested allows to manipulate private variables of your test object.
 
 
 ## Example usage
