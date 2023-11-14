@@ -6,8 +6,16 @@ if [ "$BRANCH" == "" ]; then
     BRANCH=$(echo $GITHUB_REF | sed 's/refs\/heads\///');
 fi;
 
-# Run a build
-curl -s --show-error -N -G --data-urlencode "scm=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" --data-urlencode "sha=$GITHUB_SHA" --data-urlencode "branch=$BRANCH" --data-urlencode "username=$1" --data-urlencode "password=$2" --data-urlencode "tcversion=$3" --data-urlencode "method=zkbuild" https://operations.zeugwerk.dev/api.php | tee response
+curl -s --show-error -N \
+    -F "scm=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
+    -F "sha=$GITHUB_SHA" \
+    -F "branch=$BRANCH" \
+    -F "username=$1" \
+    -F "password=$2" \
+    -F "tcversion=$3" \
+    -F "method=zkbuild" \
+    https://zeugwerk.dev/api.php | tee response
+
 status="$(tail -n1 response)"
 artifact="$(tail -n2 response | head -n1 | cut -d '=' -f2)"
 
