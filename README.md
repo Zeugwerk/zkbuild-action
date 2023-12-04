@@ -12,7 +12,7 @@ This [GitHub Action](https://github.com/features/actions) can be used to build a
 
 * `password`: Password of a Zeugwerk Useraccount (Required)
 
-* `tcversion`: TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, the latest available version of TwinCAT is used. (Optional)
+* `tcversion`: (Optional) This defaults to TC3.1 and should usually not be changed without contacting us. The setting can be used to overwrite the TwinCAT target that the PLC is compiled for
 
 
 
@@ -109,6 +109,10 @@ assertions.EqualsDint(5, 4, 'This test failes');
 It is important that the function block implements the interface `ZCore.IUnittest`, then every method with the signature above is regarded as a test.
 You can implement as many testsuites and tests as you want. The [assertions interface](https://doc.zeugwerk.dev/reference/ZCore/UnitTest/IAssertions.html) offers a lot of methods to write tests. Extending from the function block that is tested allows to manipulate private variables of your test object.
 
+## Publishing a library
+
+When the action is successfully finished and the configuration is set to `type = Library`, there will be a library placed in the working directory of the GitHub running in the path `archive/REPO_NAME/TC3.1/PLCNAME_VERSION.library`.
+This library can then we uploaded to the Twinpack Package Manager via a seperate [publish action](https://github.com/Zeugwerk/twinpack-action). Of course it is also possible to process the library further in any other way (creating a GitHub Release, pushing it to a private server, ...)
 
 ## Example usage
 
@@ -137,3 +141,4 @@ jobs:
         with:
           files: archive/test/TcUnit_xUnit_results.xml
 ```
+
