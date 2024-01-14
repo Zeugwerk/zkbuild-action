@@ -124,8 +124,7 @@ on:
     branches:
       - main
       - 'release/**'
-  pull_request:
-    branches: [ main ]
+  pull_request_target:
   workflow_dispatch:
 jobs:
   Build:
