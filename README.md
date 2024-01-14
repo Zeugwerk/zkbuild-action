@@ -87,6 +87,7 @@ zkbuild can also execute unittests. We support two variants how this can be achi
 - This is the perferred way for us to implement tests, because it puts the tests right next to the actual code.
 - It **requires the usage** of the package `Zeugwerk.Core` (`ZCore`), because zkbuild relies on an [assertions interface](https://doc.zeugwerk.dev/reference/ZCore/UnitTest/IAssertions.html) that is defined in this library.
 - Creating tests is pretty straight forward: If you want to write testsuite for the function block `Valve`, implement the following function block
+- zkbuild automatically removes all function blocks that implement `ZCore.IUnittest` from the .library file that is returned by the action
 
 ```
 FUNCTION_BLOCK ValveTest EXTENDS Valve IMPLEMENTS ZCore.IUnittest
