@@ -142,3 +142,61 @@ jobs:
           files: archive/test/TcUnit_xUnit_results.xml
 ```
 
+## Patches
+
+Zeugwerk CI supports to apply patches to the source code of the repository, which are applied before compiling the code.
+At the moment the following types of patches are supported
+- `Platform patches`: are applied for specific TwinCAT Versions
+- `Argument patches`: can be used for feature flags. At the moment this feature is not enabled for the free-to-use zkbuild, if you are interested in using it for your open source project, you may submit an [issue](https://github.com/Zeugwerk/zkbuild-action/issues).
+  
+To use patches, a `config.json` file has to be used and patches have to be configured in the configuration file as follows
+
+```jsonc
+{
+  "fileversion": 1,
+  "solution": "TwinCAT Project1.sln",
+  "projects": [
+    {
+      "name": "TwinCAT Project1",
+      "plcs": [
+        {
+          ...
+          "name": "Untitled1",
+          "patches":
+            "platform": {
+              "TC3.1.4024.56": [
+                "git-patch-for-specific-twincat-version.patch",
+                "search-and-replace.for-specific-twincat-version.replacement"
+              ]
+            },
+            "argument": {
+              "": [
+                "git-patch.patch",
+                "search-and-replace-replacement"
+              ]
+            },
+          ...
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Git patches
+Any file with the extension `.patch` is [applied as a Git patch](https://git-scm.com/docs/git-apply). You can use `git diff > some-changes.patch` to create the patch and the CI system, will use `git apply -3 some-changes.patch` to apply the patch. If this fails, there is a fallback to `git apply some-changes.patch`. If the patch can not be applied correctly, the pipeline will go to failure.
+
+### Search-and-replace patch
+We support asimple mechanismn to do search-and-replace over many files of the source code before it is compiled. For simple patches this is simpler than using a proper git patch. A replacement patch is a json file, which has the following format and has the file extension `.replacement`
+
+```jsonc
+{
+  "filter": "*.TcPOU",
+  "search": "pattern",
+  "replace": "replacement"
+}
+```
+
+- `filter` can be used to filter for specific files, the examples filters for all POUs in the source code
+- `search` is a the regular expression pattern to match
+- `replace` is the replacement string, which may contain identifiers to refer to captures of the regex (`$1` ... `$N`)
