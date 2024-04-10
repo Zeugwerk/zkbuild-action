@@ -184,7 +184,7 @@ To use patches, a `config.json` file has to be used and patches have to be confi
 ```
 
 ### Git patches
-Any file with the extension `.patch` is [applied as a Git patch](https://git-scm.com/docs/git-apply). You can use `git diff > some-changes.patch` to create the patch and the CI system, will use `git apply -3 some-changes.patch` to apply the patch. If this fails, there is a fallback to `git apply some-changes.patch`. If the patch can not be applied correctly, the pipeline will go to failure.
+Any file with the extension `.patch` is [applied as a Git patch](https://git-scm.com/docs/git-apply). You can use `git diff > some-changes.patch` to create the patch and the CI system, will use `git apply -3 some-changes.patch` to apply the patch. If the patch can not be applied correctly, the pipeline will go to failure.
 
 ### Search-and-replace patch
 We support asimple mechanismn to do search-and-replace over many files of the source code before it is compiled. For simple patches this is simpler than using a proper git patch. A replacement patch is a json file, which has the following format and has the file extension `.replacement`
