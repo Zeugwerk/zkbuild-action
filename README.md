@@ -199,4 +199,4 @@ We support asimple mechanismn to do search-and-replace over many files of the so
 
 - `filter` can be used to filter for specific files, the examples filters for all POUs in the source code
 - `search` is a the regular expression pattern to match
-- `replace` is the replacement string, which may contain identifiers to refer to captures of the regex (`$1` ... `$N`)
+- `replace` is the replacement string, which may contain identifiers to refer to captures of the regex (`$1` ... `$N`). It is also possible to use enviornment variables here. Zeugwerk CI uses Jenkins, enviornment variables can be referred to with `{{env.ENVIORNMENT_VARIABLE}}`. See [here](https://devopsqa.wordpress.com/2019/11/19/list-of-available-jenkins-environment-variables/) for a list of possible enviornmemt variables.
