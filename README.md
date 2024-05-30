@@ -45,7 +45,7 @@ A typcial configuration file for a solution with 1 PLC looks like this (Twinpack
         {
           "version": "1.0.0.0",
           "name": "Untitled1",
-          "type": "Application",
+          "type": "Library",
           "packages": [
             {
               "version": "1.2.19.0",
