@@ -136,7 +136,7 @@ jobs:
         with:
           username: ${{ secrets.ACTIONS_ZGWK_USERNAME }}
           password: ${{ secrets.ACTIONS_ZGWK_PASSWORD }}
-      - name: Upload
+      - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: artifact
