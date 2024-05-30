@@ -136,6 +136,12 @@ jobs:
         with:
           username: ${{ secrets.ACTIONS_ZGWK_USERNAME }}
           password: ${{ secrets.ACTIONS_ZGWK_PASSWORD }}
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact
+          path: |
+            **/*library 
       - name: Publish Unittest
         uses: EnricoMi/publish-unit-test-result-action@v1
         with:
