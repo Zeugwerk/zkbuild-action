@@ -178,7 +178,7 @@ To use patches, a `config.json` file has to be used and patches have to be confi
             "argument": {
               "": [
                 "git-patch.patch",
-                "search-and-replace-replacement"
+                "search-and-replace.replacement"
               ]
             },
           ...
@@ -193,7 +193,7 @@ To use patches, a `config.json` file has to be used and patches have to be confi
 Any file with the extension `.patch` is [applied as a Git patch](https://git-scm.com/docs/git-apply). You can use `git diff > some-changes.patch` to create the patch and the CI system, will use `git apply -3 some-changes.patch` to apply the patch. If the patch can not be applied correctly, the pipeline will go to failure.
 
 ### Search-and-replace patch
-We support asimple mechanismn to do search-and-replace over many files of the source code before it is compiled. For simple patches this is simpler than using a proper git patch. A replacement patch is a json file, which has the following format and has the file extension `.replacement`
+We support a mechanismn to do search-and-replace over many files in the source code before it is compiled. This is simpler than using a proper git patch. A replacement patch is a json file, which has the following format and has the file extension `.replacement`
 
 ```jsonc
 {
@@ -204,5 +204,5 @@ We support asimple mechanismn to do search-and-replace over many files of the so
 ```
 
 - `filter` can be used to filter for specific files, the examples filters for all POUs in the source code
-- `search` is a the regular expression pattern to match
+- `search` is a the regular expression pattern to match, special characters have to be escaped
 - `replace` is the replacement string, which may contain identifiers to refer to captures of the regex (`$1` ... `$N`). It is also possible to use enviornment variables here. Zeugwerk CI uses Jenkins, enviornment variables can be referred to with `{{env.ENVIORNMENT_VARIABLE}}`. See [here](https://devopsqa.wordpress.com/2019/11/19/list-of-available-jenkins-environment-variables/) for a list of possible enviornmemt variables.
