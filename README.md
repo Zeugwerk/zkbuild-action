@@ -77,7 +77,7 @@ zkbuild can also execute unittests. We support two variants how this can be achi
 
 ### Unittests defined in own PLC
 
-- For this, it is mandatory to place your unittests in a subfolder called `tests`
+- For this, it is mandatory to place your unittest solution in a subfolder called `tests`
 - It **requires the usage** of the latest release of [TcUnit](https://github.com/tcunit/TcUnit).
 - Tests can be implemented as documented in TcUnit.
 - A seperate configuration file is needed in `tests\.Zeugwerk\config.json`, which describes how to build the unittest PLC
