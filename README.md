@@ -2,7 +2,7 @@
 
 This [GitHub Action](https://github.com/features/actions) can be used to build and unittest TwinCAT PLCs that are contained in a Visual Studio Solution file (.sln) in a repository, This facilites CI/CD for TwinCAT by providing an up-to-date, virtualized build-infrastructure as well as proven developer tools. Use with an action such as [publish-unit-test-result-action](https://github.com/EnricoMi/publish-unit-test-result-action) to publish the results of the unittests to GitHub.
 
-The main goal of this GitHub action is to support open-source projects with CI/CD for TwinCAT. Many maintainers of open-source projects may not have the resources to implement, host, and upgrade a build system for TwinCAT. By [registering](https://zeugwerk.dev/wp-login.php?action=register) to use this service for public repositories, you can run the action up to 30 times per month.
+The main goal of this GitHub action is to support open-source projects with CI/CD for TwinCAT. Many maintainers of open-source projects may not have the resources to implement, host, and continously upgrade a build system for TwinCAT. By [registering](https://zeugwerk.dev/wp-login.php?action=register) to use this service for public repositories, you can run the action up to 30 times per month.
 
 Additionally, we offer a commercial solution for companies seeking an enterprise-level service. This solution can be tailored to meet your specific needs, whether you prefer to use our build system with our servers, deploy our developer tools on your own servers, or any combination of both. For more information and to discuss your requirements, please [contact us](mailto:info@zeugwerk.at).
 
