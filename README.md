@@ -9,9 +9,9 @@ Additionally, we offer a commercial solution for companies seeking an enterprise
 
 ## Inputs
 
-* `username`: Username of a Zeugwerk Useraccount obtained by [registering](https://zeugwerk.dev/wp-login.php?action=register)(Required)
+* `username`: Username of a Zeugwerk Useraccount obtained by [registering](https://zeugwerk.dev/wp-login.php?action=register) (Required)
 
-* `password`: After registering, you'll receive an e-mail to set a password for your account, please check your Spam folder if no e-mail appears in your inbox (Required)
+* `password`: After registering, you'll receive an e-mail to set a password for your account, please check your spam folder if no e-mail appears in your inbox (Required)
 
 * `tcversion`: (Optional) This defaults to TC3.1 and should usually not be changed without contacting us. The setting can be used to overwrite the TwinCAT target that the PLC is compiled for.
 
