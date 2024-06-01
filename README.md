@@ -9,15 +9,14 @@ Additionally, we offer a commercial solution for companies seeking an enterprise
 
 ## Inputs
 
-* `username`: Username of a Zeugwerk Useraccount (Required)
+* `username`: Username of a Zeugwerk Useraccount obtained by [registering](https://zeugwerk.dev/wp-login.php?action=register)(Required)
 
-* `password`: Password of a Zeugwerk Useraccount (Required)
+* `password`: After registering, you'll receive an e-mail to set a password for your account, please check your Spam folder if no e-mail appears in your inbox (Required)
 
-* `tcversion`: (Optional) This defaults to TC3.1 and should usually not be changed without contacting us. The setting can be used to overwrite the TwinCAT target that the PLC is compiled for
+* `tcversion`: (Optional) This defaults to TC3.1 and should usually not be changed without contacting us. The setting can be used to overwrite the TwinCAT target that the PLC is compiled for.
 
 
-
-### Creating secrets
+### Creating secrets to store account information
 
 We highly recommend to store the value for `username` and `password` in GitHub as secrets. GitHub Secrets are encrypted and allow you to store sensitive information, such as access tokens, in your repository. Do these steps for `username` and `password`
 
