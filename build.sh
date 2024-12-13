@@ -13,6 +13,7 @@ curl -s --show-error -N \
     -F "username=$1" \
     -F "password=$2" \
     -F "tcversion=$3" \
+    -F "working-directory=$4" \
     -F "method=zkbuild" \
     https://zeugwerk.dev/api.php | tee response
 
@@ -34,6 +35,7 @@ if [[ "$status" = *"HTTP/1.1 202"* ]]; then
     # return code 0 means no errors
     # return code 1 means there was an error or warning, but processing was successful anyway
     unzip -q -o 'artifact.zip'
+    echo "Artifacts extracted to archive/"
     if [[ $? -gt 1 ]]; then
         exit 202
     fi
