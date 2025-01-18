@@ -13,13 +13,25 @@ inputs:
     required: true
     default: ''
   tcversion:
-    description: 'TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, a arbitrary TwinCAT version, which is available on the Zeugwerk CI environment, is used.'
+    description: 'TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, an arbitrary TwinCAT version, which is available on the Zeugwerk CI environment, is used.'
     required: false
     default: ''    
   workspace:
     description: 'Folder, which contains the .Zeugwerk folder, defaults to ./'
     required: false
     default: './'    
+  version:
+    description: 'If set to a valid version number (e.g. 1.2.3.4, 1.2.3-alpha), zkbuild will create the artifacts with the passed version number instead of using the latest (version) tag of the repository'
+    required: false
+    default: ''
+  skip-build:
+    description: 'If set to true, zkbuild will skip building the artifact of the project. This can be useful to speed up the build process if you are only interested in the outcome of the unittests'
+    required: false
+    default: 'false'
+  skip-test:
+    description: 'If set to true, zkbuild will skip building and executing the unit tests defined in the project'
+    required: false
+    default: 'false'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -28,3 +40,6 @@ runs:
     - ${{ inputs.password }}
     - ${{ inputs.tcversion }}    
     - ${{ inputs.workspace }}    
+    - ${{ inputs.version }}    
+    - ${{ inputs.skip-build }}    
+    - ${{ inputs.skip-test }}    

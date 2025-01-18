@@ -14,6 +14,9 @@ curl -s --show-error -N \
     -F "password=$2" \
     -F "tcversion=$3" \
     -F "working-directory=$4" \
+    -F "version=$5" \
+    -F "skip-build=$6" \
+    -F "skip-test=$7" \
     -F "method=zkbuild" \
     https://zeugwerk.dev/api.php | tee response
 
