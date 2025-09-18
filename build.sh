@@ -17,8 +17,9 @@ curl -s --show-error -N \
     -F "version=$5" \
     -F "skip-build=$6" \
     -F "skip-test=$7" \
-    -F "variant=$8" \
-    -F "static-analysis=$9" \
+    -F "variant-build=$8" \
+    -F "variant-test=$9" \
+    -F "static-analysis=$10" \
     -F "method=zkbuild" \
     https://zeugwerk.dev/api.php | tee response
 
