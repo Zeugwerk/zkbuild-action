@@ -28,6 +28,10 @@ inputs:
     description: 'Run TwinCAT static analysis - light or advanced, depending what your username has access to. Open source users only have access to the light variant. Static analysis settings specified in the PLC proj files are used.'
     required: false
     default: 'false'    
+  installer:
+    description: 'Build a Installer so that the PLC can be installed on a Target via a Windows PC.'
+    required: false
+    default: 'false'    
   workspace:
     description: 'Folder, which contains the .Zeugwerk folder, defaults to ./'
     required: false
@@ -57,4 +61,5 @@ runs:
     - ${{ inputs.skip-test }}    
     - ${{ inputs.variant-build }}    
     - ${{ inputs.variant-test }}    
-    - ${{ inputs.static-analysis }}    
+    - ${{ inputs.static-analysis }}
+    - ${{ inputs.installer }}
