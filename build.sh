@@ -21,6 +21,7 @@ curl -s --show-error -N \
     -F "variant-test=$9" \
     -F "static-analysis=${10}" \
     -F "installer=${11}" \
+    -F "platform=${12}" \
     -F "method=zkbuild" \
     https://zeugwerk.dev/api.php | tee response
 

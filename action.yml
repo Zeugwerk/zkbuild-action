@@ -16,6 +16,10 @@ inputs:
     description: 'TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, an arbitrary TwinCAT version, which is available on the Zeugwerk CI environment, is used.'
     required: false
     default: ''    
+  platform:
+    description: 'What platform to build for'
+    required: false
+    default: 'TwinCAT RT (x64)'    
   variant-build:
     description: 'Allows to specify which variant of the PLC should be built'
     required: false
@@ -63,3 +67,4 @@ runs:
     - ${{ inputs.variant-test }}    
     - ${{ inputs.static-analysis }}
     - ${{ inputs.installer }}
+    - ${{ inputs.platform }}
