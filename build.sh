@@ -10,7 +10,7 @@ echo "Requesting build ..."
 
 curl -s --show-error -N \
     -F "scm=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
-    -F "sha=$GITHUB_SHA" \
+    -F "sha=${13}" \
     -F "branch=$BRANCH" \
     -F "username=$1" \
     -F "password=$2" \
