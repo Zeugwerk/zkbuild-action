@@ -14,14 +14,30 @@ fi
 
 echo "Using commit SHA: $SHA"
 
+echo "Login ..."
+curl -s --show-error -N \
+    -H "Accept: text/x-shell" \
+    -F "username=$1" \
+    -F "password=$2" \
+    -F "method=zklogin" \
+    https://zeugwerk.dev/api.php > response 2>&1
+
+status="$(tail -n1 response)"
+bearer_token="$(tail -n2 response | head -n1 | cut -d '=' -f2)"
+
+# Status is not PENDING
+if [[ "$status" != *"HTTP/1.1 200"* ]]; then
+    echo -e "\n\nLogin failed!"
+    exit 1
+fi
+
 echo "Requesting build ..."
 
 curl -s --show-error -N \
+    -H "Authorization: Bearer $bearer_token" \
     -F "scm=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" \
     -F "sha=$SHA" \
     -F "branch=$BRANCH" \
-    -F "username=$1" \
-    -F "password=$2" \
     -F "tcversion=$3" \
     -F "working-directory=$4" \
     -F "version=$5" \
@@ -50,9 +66,8 @@ fi
 while [[ $status == *"HTTP/1.1 203"*   ]]; do
 
     curl -s --show-error -N \
+        -H "Authorization: Bearer $bearer_token" \
         -F "method=zkbuild" \
-        -F "username=$1" \
-        -F "password=$2" \
         -F "async=true" \
         -F "token=$token" \
         https://zeugwerk.dev/api.php > response 2>&1
