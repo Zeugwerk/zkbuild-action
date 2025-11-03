@@ -90,7 +90,7 @@ while [[ $status == *"HTTP/1.1 203"*   ]]; do
     # We got an artifact that we can extract
     if [[ "$status" = *"HTTP/1.1 202"* ]]; then
         tail -n +14 response 
-        wget --user=$1 --password=$2 -q -O 'artifact.zip' $artifact
+        curl --retry 3 --retry-delay 5 -u "$1:$2" -s -o 'artifact.zip' $artifact
         if [[ $? -ne 0 ]]; then
             exit 202
         fi
