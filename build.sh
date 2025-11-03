@@ -92,6 +92,7 @@ while [[ $status == *"HTTP/1.1 203"*   ]]; do
         tail -n +14 response 
         curl --retry 3 --retry-delay 5 -u "$1:$2" -s -o 'artifact.zip' $artifact
         if [[ $? -ne 0 ]]; then
+            echo "Failed to download artifact from $artifact"
             exit 202
         fi
         
