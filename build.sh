@@ -47,6 +47,7 @@ curl -s --show-error -N \
     -F "static-analysis=${10}" \
     -F "installer=${11}" \
     -F "platform=${12}" \
+    -F "force-checks=${13}" \
     -F "method=zkbuild" \
     -F "async=true" \
     https://zeugwerk.dev/api.php > response 2>&1
