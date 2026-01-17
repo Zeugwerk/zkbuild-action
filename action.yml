@@ -52,6 +52,10 @@ inputs:
     description: 'If set to true, zkbuild will skip building and executing the unit tests defined in the project'
     required: false
     default: 'false'
+  force-checks:
+    description: 'zkbuild is usually skipping "check all objects" when building an application (PLC with at least one task). Usually build solution is sufficent for applications. if the check is explicitly wanted, this flag forces to do this check for applications'
+    required: false
+    default: 'false'
 runs:
   using: 'docker'
   image: 'Dockerfile'
