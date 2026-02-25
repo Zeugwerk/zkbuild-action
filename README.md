@@ -88,24 +88,33 @@ jobs:
 
 ## How It Works
 
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant Repo as Git Repository (GitHub)
+    participant Action as zkbuild-action (GitHub Action)
+    participant CI as Zeugwerk CI/CD
+
+    Dev->>Repo: 🚀 Push commit / create tag
+    Repo-->>Action: 🔔 Webhook trigger
+
+    Action->>CI: ⚙️ Start build pipeline
+
+    Note over CI: Zeugwerk CI/CD Pipeline Execution
+
+    CI->>CI: 📝 Generate changelog
+    CI->>CI: 🛠️ Build (.library file if needed)
+    CI->>CI: 🧪 Run unit tests
+    CI->>CI: 📦 Collect Artifacts
+
+    CI-->>Action: 📊 Build artifacts + test reports
+    Action-->>Repo: ⬆️ Upload artifacts & reports
+
+    Repo-->>Dev: ✅ Results visible in repository
+
 ```
-Your Git Repo (GitHub)
-        ↓
-    Webhook trigger
-        ↓
-zkbuild-action (GitHub Action)
-        ↓
-  Zeugwerk CI/CD
-        ↓
-  - Compiles TwinCAT project
-  - Runs unit tests (TcUnit)
-  - Generates changelog
-  - Creates .library files
-        ↓
-  Artifacts + test reports
-        ↓
-  Back to GitHub
-```
+
 
 **No Jenkins. No servers. No maintenance.**
 
