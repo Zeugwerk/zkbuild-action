@@ -1,38 +1,228 @@
 # zkbuild-action
 
-This [GitHub Action](https://github.com/features/actions) can be used to build and unittest TwinCAT PLCs that are contained in a Visual Studio Solution file (.sln) in a repository, This facilites CI/CD for TwinCAT by providing an up-to-date, virtualized build-infrastructure as well as proven developer tools. Use with an action such as [publish-unit-test-result-action](https://github.com/EnricoMi/publish-unit-test-result-action) to publish the results of the unittests to GitHub.
+**Automated TwinCAT CI/CD without Jenkins**: Stop building TwinCAT in the IDE. Get reproducible, tested, automated builds in your GitHub workflow.
 
-The main goal of this GitHub action is to support open-source projects with CI/CD for TwinCAT. Many maintainers of open-source projects may not have the resources to implement, host, and continously upgrade a build system for TwinCAT. By [registering](https://zeugwerk.dev/wp-login.php?action=register) to use this service for public repositories, you can run the action up to 30 times per month.
+zkbuild-action is a GitHub Action that builds, tests, and packages TwinCAT PLCs directly from your repository. No Jenkins/Buildsystem setup. No complex infrastructure. Push code → automatic build + unit tests → artifacts ready to deploy.
 
-Additionally, we offer a commercial solution for companies seeking an enterprise-level service. This solution can be tailored to meet your specific needs, whether you prefer to use our build system with our servers, deploy our developer tools on your own servers, or any combination of both. For more information and to discuss your requirements, please [contact us](mailto:info@zeugwerk.at).
+## Table of Contents
+
+- [Why You Need This](#why-you-need-this)
+- [Quick Start](#quick-start)
+- [How It Works](#how-it-works)
+- [Configuration](#configuration)
+- [Pricing](#pricing)
+- [How It Compares](#how-it-compares)
+- [Examples](#examples)
+- [Troubleshooting](#troubleshooting)
+- [Advanced Features: Config with Dependencies](#advanced-features-config-with-dependencies)
+- [Advanced Features: Patches](#advanced-features-patches)
+
+## Why You Need This
+
+- **Reproducible builds**: Same output every time, on any machine
+- **Automated testing**: Run TcUnit tests in CI; fail the build if tests fail
+- **No manual builds**: Eliminate the "forgot to rebuild" and "works on my machine" problems
+- **Audit trail**: Every build is logged and traceable (required for compliance)
+- **Zero DevOps**: Works with GitHub. No build servers to maintain
+
+### The Problem It Solves
+
+Most TwinCAT engineers build locally in the IDE:
+```
+1. Engineer writes code in TwinCAT IDE (local machine)
+2. Manual testing on hardware
+3. Activate to target in the IDE
+5. Hope nothing breaks in production
+```
+
+This breaks at scale. You need:
+- Multiple engineers working on the same code → build conflicts
+- Regulatory traceability → manual builds leave no audit trail
+- New team members → "how do I build this?" becomes a mystery
+
+zkbuild-action solves this: **Push code → Automated build + tests → Versioned artifacts.**
+
+## Quick Start
+
+**1. Register (Free for Open Source)**:
+
+[Register here](https://zeugwerk.dev/wp-login.php?action=register) to get credentials. You'll receive 30 free builds/month for public repos.
+
+**2. Create a GitHub Workflow**:
+
+Add this file to your repo: `.github/workflows/build.yml`
+
+```yaml
+name: Build/Test
+on:
+  push:
+    branches:
+      - main
+      - 'release/**'
+  pull_request_target:
+  workflow_dispatch:
+jobs:
+  Build:
+    name: Build/Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        uses: Zeugwerk/zkbuild-action@1.0.0
+        with:
+          username: ${{ secrets.ACTIONS_ZGWK_USERNAME }}
+          password: ${{ secrets.ACTIONS_ZGWK_PASSWORD }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact
+          path: |
+            **/*library 
+      - name: Publish Unittest
+        uses: EnricoMi/publish-unit-test-result-action@v1
+        with:
+          files: archive/test/TcUnit_xUnit_results.xml
+```
+
+3. **Add credentials**: Store your Zeugwerk username/password as GitHub Secrets (don't commit them!)
+4. **Push**: Commit this workflow and watch builds run automatically
+
+## How It Works
+
+```
+Your Git Repo (GitHub)
+        ↓
+    Webhook trigger
+        ↓
+zkbuild-action (GitHub Action)
+        ↓
+  Zeugwerk CI/CD
+        ↓
+  - Compiles TwinCAT project
+  - Runs unit tests (TcUnit)
+  - Generates changelog
+  - Creates .library files
+        ↓
+  Artifacts + test reports
+        ↓
+  Back to GitHub
+```
+
+**No Jenkins. No servers. No maintenance.**
+
+## Configuration
+
+### Inputs
+
+| Input | Required | Description |
+|---|---|---|
+| `username` | Yes | Zeugwerk account username |
+| `password` | Yes | Zeugwerk account password |
+| `tcversion` | No | TwinCAT version (default: TC3.1) |
+
+### Outputs
+
+| Artifact | Location |
+|---|---|
+| `.library` file(s) | `archive/<repo>/<tcversion>/<plc_name>_<version>.library` |
+| Test results (JUnit XML) | `archive/test/TcUnit_xUnit_results.xml` |
+| Build logs | Available in GitHub Actions UI |
+
+### Basic (Single PLC, no dependencies)
+
+Create `.Zeugwerk/config.json` in your repo:
+
+```json
+{
+  "fileversion": 1,
+  "solution": "MyProject.sln",
+  "projects": [
+    {
+      "name": "MyProject",
+      "plcs": [
+        {
+          "name": "MainPLC",
+          "version": "1.0.0.0",
+          "type": "Library"
+        }
+      ]
+    }
+  ]
+}
+```
+
+(Use [Twinpack](https://github.com/Zeugwerk/Twinpack) to generate this automatically)
+
+### With Unit Tests
+
+zkbuild-action runs unit tests automatically. Two options:
+
+**Option A: Tests in your PLC code (recommended)**
+- Implement function blocks that extend `Testbench.IUnittest` **or** for Zeugwerk-Framework users `ZCore.IUnittest`.
+- zkbuild automatically finds and runs them
+- Requires [ZCore package](https://doc.zeugwerk.dev/) **or** [Testbench](https://github.com/Zeugwerk/Testbench) (do not mix!)
+
+Example:
+```iec61131-st
+FUNCTION_BLOCK MyFunctionTest EXTENDS MyFunction IMPLEMENTS ZCore.IUnittest
+
+METHOD TestPositiveValue
+VAR_INPUT
+  assertions : ZCore.IAssertions;
+END_VAR
+
+assertions.EqualsDint(42, MyFunction_instance.Calculate(42), 'Test failed');
+END_METHOD
+
+END_FUNCTION_BLOCK
+```
+
+See [Documentation](https://github.com/Zeugwerk/Testbench?tab=readme-ov-file#write-unittests) for details about the supported method signatures.
+
+**Option B: Separate test project**
+- Create a `tests/` folder with a separate `.plcproj`
+- Use [TcUnit](https://github.com/tcunit/TcUnit)
+- zkbuild runs both projects
 
 
-## Inputs
+## Pricing
 
-* `username`: Username of a Zeugwerk Useraccount obtained by [registering](https://zeugwerk.dev/wp-login.php?action=register) (Required)
+- **Free**: 30 builds/month for public repositories
+- **Commercial**: Custom pricing for private repos and higher volume. [Contact us](mailto:info@zeugwerk.at)
 
-* `password`: After registering, you'll receive an e-mail to set a password for your account, please check your spam folder if no e-mail appears in your inbox (Required)
+## How It Compares
 
-* `tcversion`: (Optional) This defaults to TC3.1 and should usually not be changed without contacting us. The setting can be used to overwrite the TwinCAT target that the PLC is compiled for.
+| Solution | Setup Time | Cost | Complexity | Includes Tests? |
+|---|---|---|---|---|
+| Local TwinCAT IDE | 0 | Free | None | No |
+| Self-hosted Jenkins | 2-4 weeks | €0-5k + time | High | No (you add it) |
+| GitHub Actions (DIY) | 2-4 weeks | €0-5k + time + €0-20/mo | High | No (you add it) |
+| **zkbuild-action** | **1 hour** | **Custom** | **Low** | **Yes ✓** |
 
 
-### Creating secrets to store account information
+## Examples
 
-We highly recommend to store the value for `username` and `password` in GitHub as secrets. GitHub Secrets are encrypted and allow you to store sensitive information, such as access tokens, in your repository. Do these steps for `username` and `password`
+- [struckig](https://github.com/stefanbesler/struckig)
+- [DeviceInfo](https://github.com/seehma/DeviceInfo)
+- [Pushover-Twincat](https://github.com/stefanbesler/Pushover-Twincat/actions)
+- [Demo-Twincat-Application-CI](https://github.com/Zeugwerk/Demo-Twincat-Application-CI)
+- [rplc](https://github.com/TcHaxx/rplc)
+- See build results, for instance: [struckig Actions tab](https://github.com/stefanbesler/struckig/actions)
 
-1. On GitHub, navigate to the main page of the repository.
-2. Under your repository name, click on the "Settings" tab.
-3. In the left sidebar, click Secrets.
-4. On the right bar, click on "Add a new secret" 
-5. Type a name for your secret in the "Name" input box. (i.e. `ACTIONS_ZGWK_USERNAME`, `ACTIONS_ZGWK_PASSWORD`)
-6. Type the value for your secret.
-7. Click Add secret. 
+## Troubleshooting
 
-## Config
+**"Build failed: credentials not found"**
+- Check that `ZEUGWERK_USERNAME` and `ZEUGWERK_PASSWORD` are set in your GitHub Secrets
 
-This action requires a configuration file that is places in the folder `.Zeugwerk/config.json`. The simplest way to generate a configuration file is by using the [Twinpack Package Manager](https://github.com/Zeugwerk/Twinpack/blob/main/README.md#configuration-file-zeugwerkconfigjson).
+**"TwinCAT version mismatch"**
+- Use `tcversion: TC3.1.4024` to specify an exact version
 
-A typcial configuration file for a solution with 1 PLC looks like this (Twinpack generates this for you automatically)
+**"Tests aren't running"**
+- Ensure function blocks implement `Testbench.IUnittest` OR ZCore.IUnittest` OR use a separate `tests/` folder with TcUnit
+
+
+## Advanced Features: Config with Dependencies
+
+Config with (automatically resolved, downloaded and installed) Dependencies
 
 ```json
 {
@@ -71,84 +261,7 @@ A typcial configuration file for a solution with 1 PLC looks like this (Twinpack
 }
 ```
 
-## Unittests
-
-zkbuild can also execute unittests. We support two variants how this can be achieved
-
-### Unittests defined in own PLC
-
-- For this, it is mandatory to place your unittest solution in a subfolder called `tests`
-- It **requires the usage** of the latest release of [TcUnit](https://github.com/tcunit/TcUnit).
-- Tests can be implemented as documented in TcUnit.
-- A seperate configuration file is needed in `tests\.Zeugwerk\config.json`, which describes how to build the unittest PLC
-
-### Unittests defined directly in the PLC
-
-- This is the perferred way for us to implement tests, because it puts the tests right next to the actual code.
-- It **requires the usage** of the package `Zeugwerk.Core` (`ZCore`), because zkbuild relies on an [assertions interface](https://doc.zeugwerk.dev/reference/ZCore/UnitTest/IAssertions.html) that is defined in this library.
-- Creating tests is pretty straight forward: If you want to write testsuite for the function block `Valve`, implement the following function block
-- zkbuild automatically removes all function blocks that implement `ZCore.IUnittest` from the .library file that is returned by the action
-
-```
-FUNCTION_BLOCK ValveTest EXTENDS Valve IMPLEMENTS ZCore.IUnittest
-
-METHOD Test_NameOfTest1
-VAR_INPUT
-  assertions : ZCore.IAssertions;
-END_VAR
-
-assertions.IsTrue(TRUE, 'This test passes');
-
-METHOD Test_NameOfTest2
-VAR_INPUT
-  assertions : ZCore.IAssertions;
-END_VAR
-
-assertions.EqualsDint(5, 4, 'This test failes');
-```
-
-It is important that the function block implements the interface `ZCore.IUnittest`, then every method with the signature above is regarded as a test.
-You can implement as many testsuites and tests as you want. The [assertions interface](https://doc.zeugwerk.dev/reference/ZCore/UnitTest/IAssertions.html) offers a lot of methods to write tests. Extending from the function block that is tested allows to manipulate private variables of your test object.
-
-## Publishing a library
-
-When the action is successfully finished and the configuration is set to `type = Library`, there will be a library placed in the working directory of the GitHub running in the path `archive/REPO_NAME/TC3.1/PLCNAME_VERSION.library`.
-This library can then we uploaded to the Twinpack Package Manager via a seperate [publish action](https://github.com/Zeugwerk/twinpack-action). Of course it is also possible to process the library further in any other way (creating a GitHub Release, pushing it to a private server, ...)
-
-## Example usage
-
-```yaml
-name: Build/Test
-on:
-  push:
-    branches:
-      - main
-      - 'release/**'
-  pull_request_target:
-  workflow_dispatch:
-jobs:
-  Build:
-    name: Build/Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build
-        uses: Zeugwerk/zkbuild-action@1.0.0
-        with:
-          username: ${{ secrets.ACTIONS_ZGWK_USERNAME }}
-          password: ${{ secrets.ACTIONS_ZGWK_PASSWORD }}
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: artifact
-          path: |
-            **/*library 
-      - name: Publish Unittest
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        with:
-          files: archive/test/TcUnit_xUnit_results.xml
-```
-
-## Patches
+## Advanced Features: Patches
 
 Zeugwerk CI supports to apply patches to the source code of the repository, which are applied before compiling the code.
 At the moment the following types of patches are supported
