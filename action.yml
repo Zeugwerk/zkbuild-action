@@ -5,57 +5,61 @@ branding:
   color: 'gray-dark'
 inputs:
   username:
-    description: 'Username for the Zeugwerk CI/CD Service'
+    description: 'Username for authenticating with the Zeugwerk CI/CD Service. Store this as a GitHub Actions secret and reference it via ${{ secrets.ZEUGWERK_USERNAME }}.'
     required: true
     default: ''
   password:
-    description: 'Password for the Zeugwerk CI/CD Service'
+    description: 'Password for authenticating with the Zeugwerk CI/CD Service. Store this as a GitHub Actions secret and reference it via ${{ secrets.ZEUGWERK_PASSWORD }}.'
     required: true
     default: ''
   tcversion:
-    description: 'TwinCAT Version (i.e. TC3.1.4024.22) that should be used to compile and test the PLCs. The TwinCAT Version has to be available on a Zeugwerk CI/CD Server. If empty, an arbitrary TwinCAT version, which is available on the Zeugwerk CI environment, is used.'
+    description: 'TwinCAT version to use for compiling and testing (e.g. TC3.1.4024.22). Must be available on the Zeugwerk CI/CD Server. If omitted, an available version is selected automatically.'
     required: false
     default: ''    
   platform:
-    description: 'What platform to build for'
+    description: 'Target platform for the build (e.g. "TwinCAT RT (x64)"). Must match a platform supported by the Zeugwerk CI/CD Server.'
     required: false
     default: 'TwinCAT RT (x64)'    
   variant-build:
-    description: 'Allows to specify which variant of the PLC should be built'
+    description: 'Name of the PLC project variant to build. If omitted, the default variant is used. Useful when the project defines multiple variants for different hardware configurations.'
     required: false
     default: ''    
   variant-test:
-    description: 'Allows to specify which variant of the PLC should be tested (e.g. usually this is a variant without hardware)'
+    description: 'Name of the PLC project variant to use when running unit tests. Typically this is a variant configured without hardware dependencies to allow tests to run in simulation.'
     required: false
     default: ''    
   static-analysis:
-    description: 'Run TwinCAT static analysis - light or advanced, depending what your username has access to. Open source users only have access to the light variant. Static analysis settings specified in the PLC proj files are used.'
+    description: 'Enable TwinCAT static analysis during the build. Accepts "false" (disabled), "true" (= 'light' analysis for open source user, 'full' analysis for Zeugwerk Customers due to the Beckhoff License costs). Uses the static analysis settings defined in the .plcproj files.'
     required: false
     default: 'false'    
   installer:
-    description: 'Build a Installer so that the PLC can be installed on a Target via a Windows PC.'
+    description: 'When set to "true", generates an installer package that allows the PLC to be deployed to a target system from a Windows PC.'
     required: false
     default: 'false'    
   workspace:
-    description: 'Folder, which contains the .Zeugwerk folder, defaults to ./'
+    description: 'Path to the directory containing the .Zeugwerk folder. Use this when your project is not located at the repository root (e.g. "src/MyPlc/"). Defaults to the repository root "./".'
     required: false
     default: './'    
   version:
-    description: 'If set to a valid version number (e.g. 1.2.3.4, 1.2.3-alpha), zkbuild will create the artifacts with the passed version number instead of using the latest (version) tag of the repository'
+    description: 'Overrides the version number used when naming build artifacts. Accepts formats such as "1.2.3.4" or "1.2.3-alpha". If omitted, the version is derived from the latest tag on the repository.'
     required: false
     default: ''
   skip-build:
-    description: 'If set to true, zkbuild will skip building the artifact of the project. This can be useful to speed up the build process if you are only interested in the outcome of the unittests'
+    description: 'When set to "true", skips compiling the project and producing build artifacts. Useful when you only want to run unit tests without a full build, reducing pipeline execution time.'
     required: false
     default: 'false'
   skip-test:
-    description: 'If set to true, zkbuild will skip building and executing the unit tests defined in the project'
+    description: 'When set to "true", skips compiling and executing the unit tests defined in the project. Useful for faster feedback cycles when test results are not required (e.g. on draft PRs).'
     required: false
     default: 'false'
   force-checks:
-    description: 'zkbuild is usually skipping "check all objects" when building an application (PLC with at least one task). Usually build solution is sufficent for applications. if the check is explicitly wanted, this flag forces to do this check for applications'
+    description: 'When set to "true", forces a "Check All Objects" pass even for application PLCs (those with at least one task). By default this check is skipped for applications since "Build Solution" is sufficient.'
     required: false
     default: 'false'
+  artifact-name:
+    description: 'File name for the downloaded build artifact archive. Defaults to "artifact.zip". Override this to avoid collisions when multiple build jobs upload artifacts in the same workflow run.'
+    required: false
+    default: 'artifact.zip'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -73,3 +77,4 @@ runs:
     - ${{ inputs.installer }}
     - ${{ inputs.platform }}
     - ${{ inputs.force-checks }}
+    - ${{ inputs.artifact-name }}
