@@ -2,6 +2,7 @@
 SCM=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY
 SHA="$GITHUB_SHA"
 BRANCH=$GITHUB_HEAD_REF
+ARTIFACT_NAME="${14:-${ARTIFACT_NAME:-artifact.zip}}"
 
 if [ "$BRANCH" == "" ]; then
     BRANCH=$(echo $GITHUB_REF | sed 's/refs\/heads\///');
@@ -12,9 +13,6 @@ if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
 fi
 
 echo "Using commit SHA: $SHA"
-
-ARTIFACT_NAME="${ARTIFACT_NAME:-${14:-artifact.zip}}"
-
 echo "Login ..."
 curl -s --show-error -N \
     -H "Accept: text/x-shell" \
