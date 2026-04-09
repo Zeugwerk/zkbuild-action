@@ -36,6 +36,10 @@ inputs:
     description: 'When set to "true", generates an installer package that allows the PLC to be deployed to a target system from a Windows PC.'
     required: false
     default: 'false'    
+  installer-name:
+    description: 'Optional name of the installer file, defaults to "Setup-<REPO_NAME> <VERSION>.exe" if not set'
+    required: false
+    default: ''
   workspace:
     description: 'Path to the directory containing the .Zeugwerk folder. Use this when your project is not located at the repository root (e.g. "src/MyPlc/"). Defaults to the repository root "./".'
     required: false
@@ -78,3 +82,4 @@ runs:
     - ${{ inputs.platform }}
     - ${{ inputs.force-checks }}
     - ${{ inputs.artifact-name }}
+    - ${{ inputs.installer-name }}
