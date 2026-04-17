@@ -29,7 +29,7 @@ inputs:
     required: false
     default: ''    
   static-analysis:
-    description: 'Enable TwinCAT static analysis during the build. Accepts "false" (disabled), "true" (= 'light' analysis for open source user, 'full' analysis for Zeugwerk Customers due to the Beckhoff License costs). Uses the static analysis settings defined in the .plcproj files.'
+    description: 'Enable TwinCAT static analysis during the build. Accepts "false" (disabled), "true" (= "light" analysis for open source user, "full" analysis for Zeugwerk Customers due to the Beckhoff License costs). Uses the static analysis settings defined in the .plcproj files.'
     required: false
     default: 'false'    
   installer:
