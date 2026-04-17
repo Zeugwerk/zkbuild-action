@@ -5,11 +5,11 @@ branding:
   color: 'gray-dark'
 inputs:
   username:
-    description: 'Username for authenticating with the Zeugwerk CI/CD Service. Store this as a GitHub Actions secret and reference it via ${{ secrets.ZEUGWERK_USERNAME }}.'
+    description: 'Username for authenticating with the Zeugwerk CI/CD Service. Store this as a GitHub Actions secret and reference it via secrets.ZEUGWERK_USERNAME.'
     required: true
     default: ''
   password:
-    description: 'Password for authenticating with the Zeugwerk CI/CD Service. Store this as a GitHub Actions secret and reference it via ${{ secrets.ZEUGWERK_PASSWORD }}.'
+    description: 'Password for authenticating with the Zeugwerk CI/CD Service. Store this as a GitHub Actions secret and reference it via secrets.ZEUGWERK_PASSWORD.'
     required: true
     default: ''
   tcversion:
