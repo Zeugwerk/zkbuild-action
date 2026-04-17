@@ -51,6 +51,7 @@ curl -s --show-error -N \
     -F "installer-name=${15}" \
     -F "method=zkbuild" \
     -F "async=true" \
+    -F "log-stream=true" \
     https://zeugwerk.dev/api.php > response 2>&1
 
 status="$(tail -n1 response)"
@@ -70,28 +71,28 @@ while [[ $status == *"HTTP/1.1 203"*   ]]; do
         -H "Authorization: Bearer $bearer_token" \
         -F "method=zkbuild" \
         -F "async=true" \
+        -F "log-stream=true" \
         -F "token=$token" \
         https://zeugwerk.dev/api.php > response 2>&1
 
     status="$(tail -n1 response)"
     artifact="$(tail -n2 response | head -n1 | cut -d '=' -f2)"
 
+    tail -n +14 response | head -n -2
+
     # Status is not SUCCESS and not UNSTABLE
     if [[ "$status" != *"HTTP/1.1 201"* ]] && [[ "$status" != *"HTTP/1.1 202"* ]] && [[ "$status" != *"HTTP/1.1 203"* ]]; then
-        tail -n +14 response 
         echo -e "\n\nBuild unsuccessful!"
         exit 1
     fi
 
     # Build is done
     if [[ "$status" = *"HTTP/1.1 201"* ]]; then
-       tail -n +14 response 
        exit 0
     fi
 
     # We got an artifact that we can extract
     if [[ "$status" = *"HTTP/1.1 202"* ]]; then
-        tail -n +14 response 
         curl --retry 3 --retry-delay 5 -u "$1:$2" -s -o "$ARTIFACT_NAME" "$artifact"
         if [[ $? -ne 0 ]]; then
             echo "Failed to download artifact from $artifact"
