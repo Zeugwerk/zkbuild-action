@@ -110,6 +110,6 @@ while [[ $status == *"HTTP/1.1 203"*   ]]; do
         exit 0
     fi
 
-    sleep 10
+    sleep 5
 done
 
