@@ -131,7 +131,7 @@ while [[ $status == *"HTTP/1.1 203"* ]]; do
         success "Build completed successfully."
 
         info "Downloading artifact from $artifact ..."
-        curl --retry 3 --retry-delay 5 -u "$USERNAME:$PASSWORD" -s -o "$ARTIFACT_NAME" "$artifact"
+        curl --retry 3 --retry-delay 5 -u "$1:$2" -s -o "$ARTIFACT_NAME" "$artifact"
         [[ $? -ne 0 ]] && fail "Failed to download artifact from $artifact"
         success "Artifact downloaded to $ARTIFACT_NAME."
 
