@@ -5,6 +5,7 @@ SCM=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY
 SHA="$GITHUB_SHA"
 BRANCH=$GITHUB_HEAD_REF
 ARTIFACT_NAME="${14:-${ARTIFACT_NAME:-artifact.zip}}"
+PIPELINE_VERSION="${GITHUB_ACTION_REF:-main}"
 
 if [ "$BRANCH" == "" ]; then
     BRANCH=$(echo $GITHUB_REF | sed 's/refs\/heads\///');
@@ -73,12 +74,13 @@ logout() {
 trap logout EXIT
 
 # ─── Request build ─────────────────────────────────────────────────────────────
-info "Requesting build..."
+info "Requesting build (pipeline version: $PIPELINE_VERSION)..."
 curl -s --show-error -N \
     -H "Authorization: Bearer $bearer_token" \
     -F "scm=$SCM" \
     -F "sha=$SHA" \
     -F "branch=$BRANCH" \
+    -F "pipeline-version=$PIPELINE_VERSION" \    
     -F "tcversion=$3" \
     -F "working-directory=$4" \
     -F "version=$5" \
