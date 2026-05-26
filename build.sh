@@ -80,7 +80,6 @@ curl -s --show-error -N \
     -F "scm=$SCM" \
     -F "sha=$SHA" \
     -F "branch=$BRANCH" \
-    -F "pipeline-version=$PIPELINE_VERSION" \    
     -F "tcversion=$3" \
     -F "working-directory=$4" \
     -F "version=$5" \
