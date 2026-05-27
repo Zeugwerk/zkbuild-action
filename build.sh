@@ -116,7 +116,7 @@ while [[ $status == *"HTTP/1.1 203"* ]]; do
     status="$(tail -n1 response)"
     artifact="$(tail -n2 response | head -n1 | cut -d '=' -f2)"
 
-    tail -n +14 response | head -n -2 | grep -v '^[[:space:]]*$'
+    tail -n +14 response | head -n -2 | grep -v '^[[:space:]]*$' || true
 
     if [[ "$status" != *"HTTP/1.1 201"* ]] && \
        [[ "$status" != *"HTTP/1.1 202"* ]] && \
