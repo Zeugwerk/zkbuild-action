@@ -314,6 +314,13 @@ To use patches, a `config.json` file has to be used and patches have to be confi
 ### Git patches
 Any file with the extension `.patch` is [applied as a Git patch](https://git-scm.com/docs/git-apply). You can use `git diff > some-changes.patch` to create the patch and the CI system, will use `git apply -3 some-changes.patch` to apply the patch. If the patch can not be applied correctly, the pipeline will go to failure.
 
+## Further Reading
+
+- [TwinCAT Build Tools Landscape 2026](https://zeugwerk.at/blog/twincat-build-tools-landscape-2026/) -- How cloud CI/CD, self-hosted Jenkins, and GitHub Actions compare for TwinCAT teams.
+- [Distributing TwinCAT DevTools On-Prem with Scoop](https://zeugwerk.at/blog/distributing-devtools-with-scoop/) -- How we handle versioned, authenticated distribution of zkmake and zkdoc to on-premises Jenkins nodes.
+
+---
+
 ### Search-and-replace patch
 We support a mechanismn to do search-and-replace over many files in the source code before it is compiled. This is simpler than using a proper git patch. A replacement patch is a json file, which has the following format and has the file extension `.replacement`
 
